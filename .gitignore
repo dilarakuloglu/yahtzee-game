@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# PyQt5
+*.ui~
+*.qrc~
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Test 
+test_*.py
+*_test.py
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# OS
+.DS_Store      
+Thumbs.db      
+*.db           
+
+# Project specific
+scores.json
+game_data.json
+config.json
