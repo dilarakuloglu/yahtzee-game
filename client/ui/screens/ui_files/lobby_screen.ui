@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LobbyScreen</class>
+ <widget class="QWidget" name="LobbyScreen">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Yahtzee - Bekleme Odası</string>
+  </property>
+  <property name="styleSheet">
+   <string>background-color: #EEF2FF;</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <item>
+    <widget class="QFrame" name="card">
+     <property name="minimumWidth"><number>440</number></property>
+     <property name="maximumWidth"><number>440</number></property>
+     <property name="styleSheet">
+      <string>QFrame { background: white; border-radius: 20px; }</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <layout class="QVBoxLayout" name="cardLayout">
+      <property name="spacing"><number>16</number></property>
+      <property name="leftMargin"><number>40</number></property>
+      <property name="topMargin"><number>36</number></property>
+      <property name="rightMargin"><number>40</number></property>
+      <property name="bottomMargin"><number>36</number></property>
+
+      <!-- İkon -->
+      <item>
+       <widget class="QLabel" name="iconLabel">
+        <property name="text"><string>⏳</string></property>
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+        <property name="styleSheet">
+         <string>font-size: 48px;</string>
+        </property>
+       </widget>
+      </item>
+
+      <!-- Başlık -->
+      <item>
+       <widget class="QLabel" name="titleLabel">
+        <property name="text"><string>Bekleme Odası</string></property>
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+        <property name="styleSheet">
+         <string>color: #1976D2; font-size: 22px; font-weight: bold;</string>
+        </property>
+       </widget>
+      </item>
+
+      <!-- Durum yazısı -->
+      <item>
+       <widget class="QLabel" name="statusLabel">
+        <property name="text"><string>Diğer oyuncu bekleniyor...</string></property>
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+        <property name="styleSheet">
+         <string>color: #757575; font-size: 14px;</string>
+        </property>
+       </widget>
+      </item>
+
+      <!-- Oyuncu listesi frame (Python tarafında doldurulur) -->
+      <item>
+       <widget class="QFrame" name="playersFrame">
+        <property name="styleSheet">
+         <string>QFrame { background: #F8F9FA; border-radius: 10px; }</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <layout class="QVBoxLayout" name="playersLayout">
+         <property name="leftMargin"><number>16</number></property>
+         <property name="topMargin"><number>12</number></property>
+         <property name="rightMargin"><number>16</number></property>
+         <property name="bottomMargin"><number>12</number></property>
+         <property name="spacing"><number>8</number></property>
+        </layout>
+       </widget>
+      </item>
+
+      <!-- Animasyon noktaları -->
+      <item>
+       <widget class="QLabel" name="dotsLabel">
+        <property name="text"><string>●  ●  ●</string></property>
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+        <property name="styleSheet">
+         <string>color: #1976D2; font-size: 20px;</string>
+        </property>
+       </widget>
+      </item>
+
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
