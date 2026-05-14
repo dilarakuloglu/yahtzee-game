@@ -86,8 +86,8 @@ class MainWindow(QMainWindow):
             self.show_end()
 
         elif mtype == "player_left":
-            self.game_screen.show_notification(msg.get("msg", "Oyuncu ayrıldı."))
             if self.stack.currentIndex() == 2:
+                self.game_screen.show_notification(msg.get("msg", "Oyuncu ayrıldı."))
                 QTimer.singleShot(3000, self._return_to_start)
 
     def _return_to_start(self):

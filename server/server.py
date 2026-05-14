@@ -108,7 +108,10 @@ class GameRoom:
         return self.players[self.current_turn % len(self.players)]
 
     def start_game(self):
+        if len(self.players) < MAX_PLAYERS:
+            return
         self.game_started = True
+        self.scores = {p[2]: {} for p in self.players}
         self.rolls_left = 3
         self.kept = [False] * 5
         self.dice = [random.randint(1, 6) for _ in range(5)]
@@ -224,15 +227,32 @@ class YahtzeeServer:
         self.waiting_room = None
         self.lock = threading.Lock()
 
-    def get_or_create_room(self):
+    def _join_room(self, conn, addr, name):
         with self.lock:
             if self.waiting_room and len(self.waiting_room.players) < MAX_PLAYERS:
-                return self.waiting_room
-            room_id = len(self.rooms) + 1
-            room = GameRoom(room_id)
-            self.rooms[room_id] = room
-            self.waiting_room = room
-            return room
+                room = self.waiting_room
+            else:
+                room_id = len(self.rooms) + 1
+                room = GameRoom(room_id)
+                self.rooms[room_id] = room
+                self.waiting_room = room
+            room.add_player(conn, addr, name)
+            should_start = len(room.players) == MAX_PLAYERS
+            if should_start:
+                self.waiting_room = None
+            return room, should_start
+
+    def _leave_room(self, room, conn, name):
+        with self.lock:
+            room.players = [(c, a, n) for c, a, n in room.players if c != conn]
+            if not room.game_started and name in room.scores:
+                del room.scores[name]
+            if not room.players:
+                if room.room_id in self.rooms:
+                    del self.rooms[room.room_id]
+                if self.waiting_room == room:
+                    self.waiting_room = None
+                log(f"Oda {room.room_id} kapatıldı.")
 
     def handle_client(self, conn, addr):
         log(f"Yeni bağlantı: {addr}")
@@ -241,7 +261,6 @@ class YahtzeeServer:
         player_name = None
 
         try:
-            # İlk mesaj: join
             data = conn.recv(1024).decode()
             msg = json.loads(data.strip())
             if msg.get("type") != "join":
@@ -249,20 +268,26 @@ class YahtzeeServer:
                 return
 
             player_name = msg.get("name", "Oyuncu")[:20]
-            room = self.get_or_create_room()
-            room.add_player(conn, addr, player_name)
+            room, should_start = self._join_room(conn, addr, player_name)
 
             room.send_to(conn, {
                 "type": "joined",
                 "name": player_name,
                 "room_id": room.room_id,
                 "players": [p[2] for p in room.players],
-                "waiting": len(room.players) < MAX_PLAYERS
+                "waiting": not should_start
             })
 
-            if len(room.players) == MAX_PLAYERS:
-                self.waiting_room = None
+            if should_start:
                 room.start_game()
+                if not room.game_started:
+                    with self.lock:
+                        self.waiting_room = room
+                    room.broadcast({
+                        "type": "waiting",
+                        "players": [p[2] for p in room.players],
+                        "msg": "Bir oyuncu bağlantısı kesildi. Yeni oyuncu bekleniyor..."
+                    })
             else:
                 room.broadcast({
                     "type": "waiting",
@@ -270,7 +295,6 @@ class YahtzeeServer:
                     "msg": f"{player_name} bekleme odasına katıldı. {MAX_PLAYERS - len(room.players)} oyuncu bekleniyor..."
                 }, exclude=conn)
 
-            # Ana mesaj döngüsü
             while True:
                 chunk = conn.recv(4096).decode()
                 if not chunk:
@@ -310,14 +334,13 @@ class YahtzeeServer:
                         "name": player_name,
                         "msg": f"{player_name} lobiden ayrıldı."
                     }, exclude=conn)
-                room.players = [(c, a, n) for c, a, n in room.players if c != conn]
-                if not room.players:
-                    with self.lock:
-                        if room.room_id in self.rooms:
-                            del self.rooms[room.room_id]
-                        if self.waiting_room == room:
-                            self.waiting_room = None
-                    log(f"Oda {room.room_id} kapatıldı.")
+                self._leave_room(room, conn, player_name)
+                if not room.game_started and room.players:
+                    room.broadcast({
+                        "type": "waiting",
+                        "players": [p[2] for p in room.players],
+                        "msg": "Yeni oyuncu bekleniyor..."
+                    })
             conn.close()
 
     def handle_restart(self, room, conn, player_name):
