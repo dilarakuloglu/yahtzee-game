@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QMainWindow, QStackedWidget
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtCore import Qt, QSize, QTimer
 from PyQt6.QtGui import QIcon
 
 from ui.screens.start_screen import StartScreen
@@ -87,6 +87,12 @@ class MainWindow(QMainWindow):
 
         elif mtype == "player_left":
             self.game_screen.show_notification(msg.get("msg", "Oyuncu ayrıldı."))
+            if self.stack.currentIndex() == 2:
+                QTimer.singleShot(3000, self._return_to_start)
+
+    def _return_to_start(self):
+        self.network.disconnect()
+        self.show_start()
 
     def closeEvent(self, event):
         self.network.disconnect()

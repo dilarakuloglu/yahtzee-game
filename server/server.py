@@ -297,11 +297,27 @@ class YahtzeeServer:
         finally:
             log(f"Bağlantı kapandı: {addr} ({player_name})")
             if room and player_name:
-                room.broadcast({
-                    "type": "player_left",
-                    "name": player_name,
-                    "msg": f"{player_name} oyundan ayrıldı."
-                }, exclude=conn)
+                if room.game_started and not room.game_over:
+                    room.game_over = True
+                    room.broadcast({
+                        "type": "player_left",
+                        "name": player_name,
+                        "msg": f"{player_name} oyundan ayrıldı. Oyun sona erdi."
+                    }, exclude=conn)
+                else:
+                    room.broadcast({
+                        "type": "player_left",
+                        "name": player_name,
+                        "msg": f"{player_name} lobiden ayrıldı."
+                    }, exclude=conn)
+                room.players = [(c, a, n) for c, a, n in room.players if c != conn]
+                if not room.players:
+                    with self.lock:
+                        if room.room_id in self.rooms:
+                            del self.rooms[room.room_id]
+                        if self.waiting_room == room:
+                            self.waiting_room = None
+                    log(f"Oda {room.room_id} kapatıldı.")
             conn.close()
 
     def handle_restart(self, room, conn, player_name):
