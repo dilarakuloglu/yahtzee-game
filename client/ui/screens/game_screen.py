@@ -332,6 +332,7 @@ class GameScreen(QWidget):
         self.kept[idx] = not self.kept[idx]
         self.dice_widgets[idx].kept = self.kept[idx]
         self.dice_widgets[idx].update()
+        self.rollBtn.setEnabled(self.rolls_left > 0 and not all(self.kept))
 
     def _on_roll(self):
         if not self.my_turn or self.rolls_left <= 0:
