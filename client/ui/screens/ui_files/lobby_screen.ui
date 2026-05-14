@@ -85,6 +85,18 @@
        </widget>
       </item>
 
+      <item>
+       <widget class="QPushButton" name="backBtn">
+        <property name="text"><string>Ana Menüye Dön</string></property>
+        <property name="minimumHeight"><number>44</number></property>
+        <property name="styleSheet">
+         <string>QPushButton { background-color: #E0E0E0; color: #424242; border-radius: 8px; font-size: 13px; font-weight: bold; } QPushButton:hover { background-color: #BDBDBD; }</string>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+       </widget>
+      </item>
 
      </layout>
     </widget>

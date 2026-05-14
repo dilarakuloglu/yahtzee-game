@@ -12,6 +12,11 @@ class LobbyScreen(QWidget):
             os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui_files", "lobby_screen.ui"),
             self
         )
+        self.backBtn.clicked.connect(self._on_back)
+
+    def _on_back(self):
+        self.main_window.network.disconnect()
+        self.main_window.show_start()
 
     def update_state(self, msg):
         mtype = msg.get("type")
