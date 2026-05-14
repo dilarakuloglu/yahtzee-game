@@ -176,7 +176,7 @@ class GameScreen(QWidget):
 
         self.scoreLayout.addWidget(header)
 
-        upper_lbl = QLabel("  UST BOLUM")
+        upper_lbl = QLabel("  ÜST BÖLÜM")
         upper_lbl.setStyleSheet("color: #757575; font-size: 10px; font-weight: bold; background:transparent;")
         self.scoreLayout.addWidget(upper_lbl)
 
@@ -185,7 +185,7 @@ class GameScreen(QWidget):
 
         self.scoreLayout.addWidget(self._make_bonus_row())
 
-        lower_lbl = QLabel("  ALT BOLUM")
+        lower_lbl = QLabel("  ALT BÖLÜM")
         lower_lbl.setStyleSheet("color: #757575; font-size: 10px; font-weight: bold; background:transparent;")
         self.scoreLayout.addWidget(lower_lbl)
 
@@ -291,38 +291,33 @@ class GameScreen(QWidget):
         self.scores = msg.get("scores", self.scores)
 
         if self.my_turn:
-            self.turnLabel.setText("Sira Sizde!")
+            self.turnLabel.setText("Sıra Sizde!")
             self.turnLabel.setStyleSheet(
                 "background: white; border-radius: 12px; padding: 12px; color: #2E7D32; font-size: 15px; font-weight: bold;"
             )
         else:
-            self.turnLabel.setText(f"{self.current_player}'in sirasi")
+            self.turnLabel.setText(f"{self.current_player}'in sırası")
             self.turnLabel.setStyleSheet(
                 "background: white; border-radius: 12px; padding: 12px; color: #00A651; font-size: 15px; font-weight: bold;"
             )
 
-        self.rollsLabel.setText(f"Atis hakki: {self.rolls_left}")
+        self.rollsLabel.setText(f"Atış hakkı: {self.rolls_left}")
         self._animate_dice_roll()
         self.rollBtn.setEnabled(self.my_turn and self.rolls_left > 0)
         self._update_score_buttons()
         self._update_score_display()
 
     def _animate_dice_roll(self):
-        pending = [0]
-        total = sum(1 for k in self.kept if not k)
-        if total == 0:
+        if all(self.kept):
             for i, d in enumerate(self.dice_widgets):
                 d.set_state(self.dice[i], self.kept[i], self.my_turn)
             return
-
-        def one_done():
-            pending[0] += 1
 
         for i, d in enumerate(self.dice_widgets):
             if not self.kept[i]:
                 d.kept = False
                 d.enabled_die = self.my_turn
-                d.animate_roll(self.dice[i], one_done)
+                d.animate_roll(self.dice[i])
             else:
                 d.set_state(self.dice[i], self.kept[i], self.my_turn)
 

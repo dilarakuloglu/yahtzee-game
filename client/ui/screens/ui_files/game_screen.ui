@@ -26,8 +26,8 @@
 
    <item>
     <widget class="QWidget" name="leftPanel">
-     <property name="minimumWidth"><number>420</number></property>
-     <property name="maximumWidth"><number>420</number></property>
+     <property name="minimumWidth"><number>500</number></property>
+     <property name="maximumWidth"><number>500</number></property>
      <layout class="QVBoxLayout" name="leftLayout">
       <property name="spacing"><number>16</number></property>
 
@@ -60,11 +60,11 @@
          <enum>QFrame::StyledPanel</enum>
         </property>
         <layout class="QVBoxLayout" name="diceInnerLayout">
-         <property name="leftMargin"><number>20</number></property>
+         <property name="leftMargin"><number>24</number></property>
          <property name="topMargin"><number>20</number></property>
-         <property name="rightMargin"><number>20</number></property>
-         <property name="bottomMargin"><number>20</number></property>
-         <property name="spacing"><number>12</number></property>
+         <property name="rightMargin"><number>24</number></property>
+         <property name="bottomMargin"><number>24</number></property>
+         <property name="spacing"><number>14</number></property>
 
          <item>
           <widget class="QLabel" name="diceTitleLabel">
@@ -78,7 +78,7 @@
          <item>
           <widget class="QWidget" name="diceRow">
            <layout class="QHBoxLayout" name="diceRowLayout">
-            <property name="spacing"><number>10</number></property>
+            <property name="spacing"><number>14</number></property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
             </property>
@@ -146,7 +146,7 @@
 
       <item>
        <widget class="QLabel" name="scoreTitleLabel">
-        <property name="text"><string>Skor Karti</string></property>
+        <property name="text"><string>Skor Kartı</string></property>
         <property name="styleSheet">
          <string>color: #424242; font-size: 15px; font-weight: bold; padding-bottom: 8px; background: transparent;</string>
         </property>

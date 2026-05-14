@@ -86,23 +86,23 @@ class StartScreen(QWidget):
         port = self.portInput.text().strip()
 
         if not name:
-            self.show_error("Lutfen adinizi girin.")
+            self.show_error("Lütfen adınızı girin.")
             return
         if not ip:
-            self.show_error("Lutfen sunucu IP adresini girin.")
+            self.show_error("Lütfen sunucu IP adresini girin.")
             return
         if not port.isdigit():
-            self.show_error("Gecerli bir port numarasi girin.")
+            self.show_error("Geçerli bir port numarası girin.")
             return
 
         self.errorLabel.setText("")
-        self.connectBtn.setText("Baglaniliyor...")
+        self.connectBtn.setText("Bağlanılıyor...")
         self.connectBtn.setEnabled(False)
         self.main_window.connect_to_server(ip, port, name)
         QTimer.singleShot(11000, self._reset_button)
 
     def _reset_button(self):
-        self.connectBtn.setText("Baglan")
+        self.connectBtn.setText("Bağlan")
         self.connectBtn.setEnabled(True)
 
     def show_error(self, msg):

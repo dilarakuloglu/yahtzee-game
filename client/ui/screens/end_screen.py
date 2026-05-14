@@ -29,10 +29,10 @@ class EndScreen(QWidget):
         players = list(scores.keys())
 
         if winner == player_name:
-            self.winnerLabel.setText("Tebrikler, kazandiniz!")
+            self.winnerLabel.setText("Tebrikler, kazandınız!")
             self.winnerLabel.setStyleSheet("color: #00A651; font-size: 24px; font-weight: bold;")
         else:
-            self.winnerLabel.setText(f"{winner} kazandi!")
+            self.winnerLabel.setText(f"{winner} kazandı!")
             self.winnerLabel.setStyleSheet("color: #F57F17; font-size: 24px; font-weight: bold;")
         self.winnerScoreLabel.setText(f"Kazanan skoru: {totals.get(winner, 0)} puan")
 
@@ -112,7 +112,7 @@ class EndScreen(QWidget):
             self.network.send({"type": "restart"})
             self.restartBtn.setText("Bekleniyor...")
             self.restartBtn.setEnabled(False)
-            self.statusLabel.setText("Diger oyuncunun onayi bekleniyor...")
+            self.statusLabel.setText("Diğer oyuncunun onayı bekleniyor...")
 
     def _on_menu(self):
         if self.network:
