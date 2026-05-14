@@ -16,7 +16,7 @@ def main():
             color: #212121;
         }
         QPushButton {
-            background-color: #1976D2;
+            background-color: #00A651;
             color: white;
             border: none;
             border-radius: 8px;
@@ -25,10 +25,10 @@ def main():
             font-weight: bold;
         }
         QPushButton:hover {
-            background-color: #1565C0;
+            background-color: #008C44;
         }
         QPushButton:pressed {
-            background-color: #0D47A1;
+            background-color: #006B33;
         }
         QPushButton:disabled {
             background-color: #BDBDBD;
@@ -42,7 +42,7 @@ def main():
             font-size: 14px;
         }
         QLineEdit:focus {
-            border-color: #1976D2;
+            border-color: #00A651;
         }
         QLabel {
             background: transparent;

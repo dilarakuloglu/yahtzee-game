@@ -90,7 +90,7 @@ class AnimatedDie(QWidget):
             border = QColor("#E0E0E0")
         else:
             bg = QColor("white")
-            border = QColor("#90CAF9")
+            border = QColor("#80D4A8")
 
         p.setPen(QPen(border, 2.5))
         p.setBrush(QBrush(bg))
@@ -99,7 +99,7 @@ class AnimatedDie(QWidget):
         val = self._anim_value if self.rolling else self.value
 
         p.setPen(Qt.PenStyle.NoPen)
-        p.setBrush(QBrush(QColor("#1565C0") if not self.kept else QColor("#E65100")))
+        p.setBrush(QBrush(QColor("#E53935") if not self.kept else QColor("#E65100")))
 
         dot_r = 6
         inner_w = W - margin*2 - 16
@@ -234,7 +234,7 @@ class GameScreen(QWidget):
         self.score_rows = {}
 
         header = QFrame()
-        header.setStyleSheet("background: #1976D2; border-radius: 10px;")
+        header.setStyleSheet("background: #00A651; border-radius: 10px;")
         hl = QHBoxLayout(header)
         hl.setContentsMargins(12, 8, 12, 8)
         cat_h = QLabel("Kategori")
@@ -290,7 +290,7 @@ class GameScreen(QWidget):
             btn.setFont(QFont("Segoe UI", 12))
             btn.setStyleSheet("""
                 QPushButton { background: transparent; color: #9E9E9E; border: none; }
-                QPushButton:hover { background: #E3F2FD; border-radius: 6px; color: #1976D2; }
+                QPushButton:hover { background: #E8F5E9; border-radius: 6px; color: #00A651; }
                 QPushButton:disabled { color: #9E9E9E; background: transparent; }
             """)
             btn.setProperty("category", cat)
@@ -325,7 +325,7 @@ class GameScreen(QWidget):
 
     def _make_total_row(self):
         row = QFrame()
-        row.setStyleSheet("background: #1976D2; border-radius: 8px; margin-top: 4px;")
+        row.setStyleSheet("background: #00A651; border-radius: 8px; margin-top: 4px;")
         rl = QHBoxLayout(row)
         rl.setContentsMargins(12, 8, 12, 8)
 
@@ -371,7 +371,7 @@ class GameScreen(QWidget):
             self.turn_label.setStyleSheet("color: #2E7D32; font-weight: bold;")
         else:
             self.turn_label.setText(f"{self.current_player}'in sirasi")
-            self.turn_label.setStyleSheet("color: #1976D2;")
+            self.turn_label.setStyleSheet("color: #00A651;")
 
         self.rolls_label.setText(f"Atis hakki: {self.rolls_left}")
         self._animate_dice_roll()
@@ -421,9 +421,9 @@ class GameScreen(QWidget):
                         btn.setText(f"+{preview}" if preview > 0 else "0")
                         btn.setEnabled(True)
                         btn.setStyleSheet("""
-                            QPushButton { background: #E3F2FD; color: #1976D2;
-                                border: 1px solid #90CAF9; border-radius: 6px; font-weight: bold; }
-                            QPushButton:hover { background: #BBDEFB; }
+                            QPushButton { background: #E8F5E9; color: #00A651;
+                                border: 1px solid #80D4A8; border-radius: 6px; font-weight: bold; }
+                            QPushButton:hover { background: #C8E6C9; }
                         """)
                     else:
                         score = self.scores.get(p, {}).get(cat, "—")

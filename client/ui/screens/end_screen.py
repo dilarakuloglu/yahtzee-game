@@ -94,7 +94,7 @@ class EndScreen(QWidget):
                 item.widget().deleteLater()
 
         header = QFrame()
-        header.setStyleSheet("background: #1976D2;")
+        header.setStyleSheet("background: #00A651;")
         hl = QHBoxLayout(header)
         hl.setContentsMargins(8, 4, 8, 4)
         cat_h = QLabel("Kategori")
@@ -139,7 +139,7 @@ class EndScreen(QWidget):
         self.score_inner.addWidget(bonus_row)
 
         total_row = QFrame()
-        total_row.setStyleSheet("background: #1976D2;")
+        total_row.setStyleSheet("background: #00A651;")
         tl = QHBoxLayout(total_row)
         tl.setContentsMargins(8, 4, 8, 4)
         total_name = QLabel("TOPLAM")

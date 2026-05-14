@@ -37,7 +37,7 @@ class LobbyScreen(QWidget):
         title_lbl = QLabel("Bekleme Odasi")
         title_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_lbl.setFont(QFont("Segoe UI", 22, QFont.Weight.Bold))
-        title_lbl.setStyleSheet("color: #1976D2;")
+        title_lbl.setStyleSheet("color: #00A651;")
         cl.addWidget(title_lbl)
 
         self.status_lbl = QLabel("Diger oyuncu bekleniyor")

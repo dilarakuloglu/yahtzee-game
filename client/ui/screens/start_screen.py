@@ -20,7 +20,7 @@ class DiceWidget(QLabel):
         6: [(0.25, 0.2), (0.75, 0.2), (0.25, 0.5), (0.75, 0.5), (0.25, 0.8), (0.75, 0.8)],
     }
 
-    def __init__(self, value=1, size=48, color="#1976D2"):
+    def __init__(self, value=1, size=48, color="#00A651"):
         super().__init__()
         self.value = value
         self.dice_size = size
@@ -68,7 +68,7 @@ class StartScreen(QWidget):
         dice_row.setAlignment(Qt.AlignmentFlag.AlignCenter)
         dice_row.setSpacing(8)
         self.dice_widgets = []
-        colors = ["#1976D2", "#E53935", "#43A047", "#FB8C00", "#8E24AA"]
+        colors = ["#00A651", "#E53935", "#43A047", "#FB8C00", "#8E24AA"]
         for i, c in enumerate(colors):
             d = DiceWidget(i + 1, 48, c)
             dice_row.addWidget(d)
