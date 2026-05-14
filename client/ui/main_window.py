@@ -39,9 +39,12 @@ class MainWindow(QMainWindow):
         self.network.error_occurred.connect(self._on_error)
 
         self.player_name = ""
+        self._leaving_intentionally = False
         self.show_start()
 
     def show_start(self):
+        self.start_screen._reset_button()
+        self.start_screen.errorLabel.setText("")
         self.stack.setCurrentIndex(0)
 
     def show_lobby(self):
@@ -61,6 +64,9 @@ class MainWindow(QMainWindow):
         self.network.send({"type": "join", "name": self.player_name})
 
     def _on_disconnected(self):
+        if self._leaving_intentionally:
+            self._leaving_intentionally = False
+            return
         self.start_screen.show_error("Sunucu bağlantısı kesildi.")
         self.show_start()
 
@@ -79,7 +85,13 @@ class MainWindow(QMainWindow):
             self.show_game()
 
         elif mtype in ("turn_state", "score_update", "restart_vote"):
-            self.game_screen.handle_message(msg)
+            if mtype == "restart_vote" and self.stack.currentIndex() == 3:
+                voter = msg.get("voter", "")
+                count = msg.get("count", 0)
+                needed = msg.get("needed", 2)
+                self.end_screen.statusLabel.setText(f"{voter} yeniden oynamak istiyor. ({count}/{needed})")
+            else:
+                self.game_screen.handle_message(msg)
 
         elif mtype == "game_over":
             self.end_screen.show_results(msg, self.player_name, self.network)
@@ -89,8 +101,13 @@ class MainWindow(QMainWindow):
             if self.stack.currentIndex() == 2:
                 self.game_screen.show_notification(msg.get("msg", "Oyuncu ayrıldı."))
                 QTimer.singleShot(3000, self._return_to_start)
+            elif self.stack.currentIndex() == 3:
+                self.end_screen.restartBtn.setEnabled(False)
+                self.end_screen.restartBtn.setText("Yeniden Oyna")
+                self.end_screen.statusLabel.setText("Diğer oyuncu ayrıldı.")
 
     def _return_to_start(self):
+        self._leaving_intentionally = True
         self.network.disconnect()
         self.show_start()
 

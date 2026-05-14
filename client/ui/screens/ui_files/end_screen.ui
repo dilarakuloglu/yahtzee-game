@@ -106,7 +106,7 @@
         <property name="text"><string>Yeniden Oyna</string></property>
         <property name="minimumHeight"><number>48</number></property>
         <property name="styleSheet">
-         <string>font-size: 14px; font-weight: bold;</string>
+         <string>QPushButton { background-color: #00A651; color: white; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: bold; } QPushButton:hover { background-color: #008C44; } QPushButton:disabled { background-color: #BDBDBD; color: #757575; }</string>
         </property>
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>

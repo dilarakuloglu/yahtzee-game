@@ -15,6 +15,7 @@ class LobbyScreen(QWidget):
         self.backBtn.clicked.connect(self._on_back)
 
     def _on_back(self):
+        self.main_window._leaving_intentionally = True
         self.main_window.network.disconnect()
         self.main_window.show_start()
 
