@@ -415,7 +415,7 @@ class GameScreen(QWidget):
     def _update_score_buttons(self):
         for cat, player_btns in self.score_rows.items():
             for p, btn in player_btns.items():
-                if p == self.player_name and self.my_turn:
+                if p == self.player_name and self.my_turn and self.rolls_left < 3:
                     if cat not in self.scores.get(p, {}):
                         preview = calculate_score(cat, self.dice)
                         btn.setText(f"+{preview}" if preview > 0 else "0")
