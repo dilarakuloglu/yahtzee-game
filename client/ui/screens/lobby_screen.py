@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QFrame,
     QGraphicsDropShadowEffect
 )
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QColor
 
 
@@ -14,11 +14,7 @@ class LobbyScreen(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-        self._dot_count = 0
         self._build_ui()
-        self._timer = QTimer(self)
-        self._timer.timeout.connect(self._animate_status)
-        self._timer.start(500)
 
     def _build_ui(self):
         self.setStyleSheet("background-color: #EEF2FF;")
@@ -76,12 +72,4 @@ class LobbyScreen(QWidget):
         if mtype in ("joined", "waiting"):
             needed = 2 - len(players)
             if needed > 0:
-                self._base_status = f"{needed} oyuncu daha bekleniyor"
-                self._dot_count = 0
-
-    def _animate_status(self):
-        if not hasattr(self, "_base_status"):
-            self._base_status = "Diger oyuncu bekleniyor"
-        dots = "." * (self._dot_count % 4)
-        self.status_lbl.setText(self._base_status + dots)
-        self._dot_count += 1
+                self.status_lbl.setText(f"{needed} oyuncu daha bekleniyor")
