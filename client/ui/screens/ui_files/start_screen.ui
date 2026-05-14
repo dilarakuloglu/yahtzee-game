@@ -44,7 +44,6 @@
       <property name="rightMargin"><number>48</number></property>
       <property name="bottomMargin"><number>40</number></property>
 
-      <!-- Zarlar satırı (DiceWidget'lar Python tarafında eklenir) -->
       <item>
        <widget class="QWidget" name="diceRow">
         <layout class="QHBoxLayout" name="diceRowLayout">
@@ -53,18 +52,16 @@
        </widget>
       </item>
 
-      <!-- Başlık -->
       <item>
        <widget class="QLabel" name="titleLabel">
         <property name="text"><string>YAHTZEE</string></property>
         <property name="alignment"><set>Qt::AlignCenter</set></property>
         <property name="styleSheet">
-         <string>color: #1976D2; font-size: 36px; font-weight: bold; letter-spacing: 8px;</string>
+         <string>color: #00A651; font-size: 36px; font-weight: bold; letter-spacing: 8px;</string>
         </property>
        </widget>
       </item>
 
-      <!-- Alt başlık -->
       <item>
        <widget class="QLabel" name="subtitleLabel">
         <property name="text"><string>Çok Oyunculu Zar Oyunu</string></property>
@@ -75,7 +72,6 @@
        </widget>
       </item>
 
-      <!-- Ayırıcı çizgi -->
       <item>
        <widget class="QFrame" name="dividerLine">
         <property name="frameShape"><enum>QFrame::HLine</enum></property>
@@ -84,7 +80,6 @@
        </widget>
       </item>
 
-      <!-- Oyuncu adı label -->
       <item>
        <widget class="QLabel" name="lblName">
         <property name="text"><string>Oyuncu Adınız</string></property>
@@ -94,7 +89,6 @@
        </widget>
       </item>
 
-      <!-- Oyuncu adı input -->
       <item>
        <widget class="QLineEdit" name="nameInput">
         <property name="placeholderText"><string>Adınızı girin...</string></property>
@@ -102,7 +96,6 @@
        </widget>
       </item>
 
-      <!-- Sunucu IP label -->
       <item>
        <widget class="QLabel" name="lblIp">
         <property name="text"><string>Sunucu IP Adresi</string></property>
@@ -112,7 +105,6 @@
        </widget>
       </item>
 
-      <!-- IP + Port satırı -->
       <item>
        <widget class="QWidget" name="ipRow">
         <layout class="QHBoxLayout" name="ipRowLayout">
@@ -138,13 +130,12 @@
        </widget>
       </item>
 
-      <!-- Bağlan butonu -->
       <item>
        <widget class="QPushButton" name="connectBtn">
-        <property name="text"><string>🎲  Oyuna Bağlan</string></property>
+        <property name="text"><string>Oyuna Baglan</string></property>
         <property name="minimumHeight"><number>48</number></property>
         <property name="styleSheet">
-         <string>font-size: 15px; font-weight: bold;</string>
+         <string>background-color: #00A651; color: white; font-size: 15px; font-weight: bold; border-radius: 8px;</string>
         </property>
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
@@ -152,7 +143,6 @@
        </widget>
       </item>
 
-      <!-- Hata etiketi -->
       <item>
        <widget class="QLabel" name="errorLabel">
         <property name="text"><string></string></property>
@@ -164,10 +154,9 @@
        </widget>
       </item>
 
-      <!-- Bilgi etiketi -->
       <item>
        <widget class="QLabel" name="infoLabel">
-        <property name="text"><string>2 oyuncu gereklidir • Sıra tabanlı</string></property>
+        <property name="text"><string>2 oyuncu gereklidir</string></property>
         <property name="alignment"><set>Qt::AlignCenter</set></property>
         <property name="styleSheet">
          <string>color: #9E9E9E; font-size: 11px;</string>

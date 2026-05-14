@@ -1,7 +1,3 @@
-"""
-Ana pencere - ekran geçişlerini yönetir
-"""
-
 from PyQt6.QtWidgets import QMainWindow, QStackedWidget
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QIcon

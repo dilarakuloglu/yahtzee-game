@@ -1,7 +1,3 @@
-"""
-Sunucu ile iletişim kuran ağ istemcisi
-"""
-
 import socket
 import json
 import threading

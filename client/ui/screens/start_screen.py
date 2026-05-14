@@ -1,13 +1,10 @@
-"""
-Baslangic Ekrani
-"""
-
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QGroupBox
-)
+import os
+import random
+from PyQt6.QtWidgets import QWidget
+from PyQt6 import uic
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont, QColor, QPainter, QBrush
+from PyQt6.QtWidgets import QLabel
 
 
 class DiceWidget(QLabel):
@@ -50,72 +47,29 @@ class StartScreen(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-        self._build_ui()
+        uic.loadUi(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui_files", "start_screen.ui"),
+            self
+        )
+        self._setup_dice()
+        self._setup_connections()
         self._start_animations()
 
-    def _build_ui(self):
-        layout = QVBoxLayout(self)
-        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.setSpacing(12)
-        layout.setContentsMargins(40, 40, 40, 40)
-
-        title = QLabel("YAHTZEE")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setFont(QFont("Segoe UI", 32, QFont.Weight.Bold))
-        layout.addWidget(title)
-
-        dice_row = QHBoxLayout()
-        dice_row.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        dice_row.setSpacing(8)
-        self.dice_widgets = []
+    def _setup_dice(self):
         colors = ["#00A651", "#E53935", "#43A047", "#FB8C00", "#8E24AA"]
+        self.dice_widgets = []
+        layout = self.diceRow.layout()
         for i, c in enumerate(colors):
             d = DiceWidget(i + 1, 48, c)
-            dice_row.addWidget(d)
+            layout.addWidget(d)
             self.dice_widgets.append(d)
-        layout.addLayout(dice_row)
 
-        group = QGroupBox("Baglanti")
-        group.setFixedWidth(380)
-        group.setFont(QFont("Segoe UI", 10))
-        form = QVBoxLayout(group)
-        form.setSpacing(8)
-
-        form.addWidget(QLabel("Oyuncu Adi"))
-        self.name_input = QLineEdit()
-        self.name_input.setPlaceholderText("Adinizi girin...")
-        self.name_input.setMaxLength(20)
-        form.addWidget(self.name_input)
-
-        form.addWidget(QLabel("Sunucu IP Adresi"))
-        ip_row = QHBoxLayout()
-        self.ip_input = QLineEdit()
-        self.ip_input.setPlaceholderText("13.53.91.129")
-        self.ip_input.setText("13.53.91.129")
-        ip_row.addWidget(self.ip_input, 3)
-
-        self.port_input = QLineEdit()
-        self.port_input.setPlaceholderText("Port")
-        self.port_input.setText("8080")
-        self.port_input.setMaximumWidth(80)
-        ip_row.addWidget(self.port_input, 1)
-        form.addLayout(ip_row)
-
-        self.connect_btn = QPushButton("Baglан")
-        self.connect_btn.setFixedHeight(36)
-        self.connect_btn.clicked.connect(self._on_connect)
-        form.addWidget(self.connect_btn)
-
-        self.error_label = QLabel("")
-        self.error_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.error_label.setStyleSheet("color: red;")
-        self.error_label.setWordWrap(True)
-        form.addWidget(self.error_label)
-
-        layout.addWidget(group, alignment=Qt.AlignmentFlag.AlignCenter)
-
-        self.name_input.returnPressed.connect(self._on_connect)
-        self.port_input.returnPressed.connect(self._on_connect)
+    def _setup_connections(self):
+        self.ipInput.setText("13.53.91.129")
+        self.portInput.setText("8080")
+        self.connectBtn.clicked.connect(self._on_connect)
+        self.nameInput.returnPressed.connect(self._on_connect)
+        self.portInput.returnPressed.connect(self._on_connect)
 
     def _start_animations(self):
         self._anim_timer = QTimer(self)
@@ -123,14 +77,13 @@ class StartScreen(QWidget):
         self._anim_timer.start(800)
 
     def _animate_dice(self):
-        import random
         for d in self.dice_widgets:
             d.set_value(random.randint(1, 6))
 
     def _on_connect(self):
-        name = self.name_input.text().strip()
-        ip = self.ip_input.text().strip()
-        port = self.port_input.text().strip()
+        name = self.nameInput.text().strip()
+        ip = self.ipInput.text().strip()
+        port = self.portInput.text().strip()
 
         if not name:
             self.show_error("Lutfen adinizi girin.")
@@ -142,17 +95,16 @@ class StartScreen(QWidget):
             self.show_error("Gecerli bir port numarasi girin.")
             return
 
-        self.error_label.setText("")
-        self.connect_btn.setText("Baglaniliyor...")
-        self.connect_btn.setEnabled(False)
+        self.errorLabel.setText("")
+        self.connectBtn.setText("Baglaniliyor...")
+        self.connectBtn.setEnabled(False)
         self.main_window.connect_to_server(ip, port, name)
-
         QTimer.singleShot(11000, self._reset_button)
 
     def _reset_button(self):
-        self.connect_btn.setText("Baglan")
-        self.connect_btn.setEnabled(True)
+        self.connectBtn.setText("Baglan")
+        self.connectBtn.setEnabled(True)
 
     def show_error(self, msg):
         self._reset_button()
-        self.error_label.setText(msg)
+        self.errorLabel.setText(msg)

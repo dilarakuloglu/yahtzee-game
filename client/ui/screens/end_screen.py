@@ -1,11 +1,6 @@
-"""
-Bitis Ekrani
-"""
-
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QFrame, QScrollArea, QGroupBox
-)
+import os
+from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QLabel
+from PyQt6 import uic
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 
@@ -18,59 +13,12 @@ class EndScreen(QWidget):
         super().__init__()
         self.main_window = main_window
         self.network = None
-        self._build_ui()
-
-    def _build_ui(self):
-        self.main_layout = QVBoxLayout(self)
-        self.main_layout.setContentsMargins(20, 20, 20, 20)
-        self.main_layout.setSpacing(12)
-
-        winner_group = QGroupBox("Sonuc")
-        winner_group.setFont(QFont("Segoe UI", 10))
-        wl = QVBoxLayout(winner_group)
-        wl.setSpacing(6)
-
-        self.winner_lbl = QLabel("")
-        self.winner_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.winner_lbl.setFont(QFont("Segoe UI", 18, QFont.Weight.Bold))
-        wl.addWidget(self.winner_lbl)
-
-        self.winner_score_lbl = QLabel("")
-        self.winner_score_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        wl.addWidget(self.winner_score_lbl)
-
-        self.main_layout.addWidget(winner_group)
-
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setMaximumHeight(340)
-
-        self.score_container = QWidget()
-        self.score_inner = QVBoxLayout(self.score_container)
-        self.score_inner.setSpacing(2)
-        self.score_inner.setContentsMargins(0, 0, 4, 0)
-
-        scroll.setWidget(self.score_container)
-        self.main_layout.addWidget(scroll, 1)
-
-        btn_row = QHBoxLayout()
-        btn_row.setSpacing(12)
-
-        self.restart_btn = QPushButton("Yeniden Oyna")
-        self.restart_btn.setFixedHeight(36)
-        self.restart_btn.clicked.connect(self._on_restart)
-        btn_row.addWidget(self.restart_btn)
-
-        self.menu_btn = QPushButton("Ana Menu")
-        self.menu_btn.setFixedHeight(36)
-        self.menu_btn.clicked.connect(self._on_menu)
-        btn_row.addWidget(self.menu_btn)
-
-        self.main_layout.addLayout(btn_row)
-
-        self.status_lbl = QLabel("")
-        self.status_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.main_layout.addWidget(self.status_lbl)
+        uic.loadUi(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui_files", "end_screen.ui"),
+            self
+        )
+        self.restartBtn.clicked.connect(self._on_restart)
+        self.menuBtn.clicked.connect(self._on_menu)
 
     def show_results(self, msg, player_name, network):
         self.network = network
@@ -81,15 +29,15 @@ class EndScreen(QWidget):
         players = list(scores.keys())
 
         if winner == player_name:
-            self.winner_lbl.setText("Tebrikler, kazandiniz!")
-            self.winner_lbl.setStyleSheet("color: green;")
+            self.winnerLabel.setText("Tebrikler, kazandiniz!")
+            self.winnerLabel.setStyleSheet("color: #00A651; font-size: 24px; font-weight: bold;")
         else:
-            self.winner_lbl.setText(f"{winner} kazandi!")
-            self.winner_lbl.setStyleSheet("")
-        self.winner_score_lbl.setText(f"Kazanan skoru: {totals.get(winner, 0)} puan")
+            self.winnerLabel.setText(f"{winner} kazandi!")
+            self.winnerLabel.setStyleSheet("color: #F57F17; font-size: 24px; font-weight: bold;")
+        self.winnerScoreLabel.setText(f"Kazanan skoru: {totals.get(winner, 0)} puan")
 
-        while self.score_inner.count():
-            item = self.score_inner.takeAt(0)
+        while self.scoreInnerLayout.count():
+            item = self.scoreInnerLayout.takeAt(0)
             if item.widget():
                 item.widget().deleteLater()
 
@@ -107,7 +55,7 @@ class EndScreen(QWidget):
             pl.setStyleSheet("color: white; background: transparent;")
             pl.setAlignment(Qt.AlignmentFlag.AlignCenter)
             hl.addWidget(pl, 1)
-        self.score_inner.addWidget(header)
+        self.scoreInnerLayout.addWidget(header)
 
         for idx, cat in enumerate(CATEGORIES):
             row = QFrame()
@@ -123,7 +71,7 @@ class EndScreen(QWidget):
                 vl.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 vl.setStyleSheet("background: transparent;")
                 rl.addWidget(vl, 1)
-            self.score_inner.addWidget(row)
+            self.scoreInnerLayout.addWidget(row)
 
         bonus_row = QFrame()
         bonus_row.setStyleSheet("background: #FFF8E1;")
@@ -136,7 +84,7 @@ class EndScreen(QWidget):
             bv = QLabel(str(bonus) if bonus else "—")
             bv.setAlignment(Qt.AlignmentFlag.AlignCenter)
             bl.addWidget(bv, 1)
-        self.score_inner.addWidget(bonus_row)
+        self.scoreInnerLayout.addWidget(bonus_row)
 
         total_row = QFrame()
         total_row.setStyleSheet("background: #00A651;")
@@ -152,19 +100,19 @@ class EndScreen(QWidget):
             tv.setFont(QFont("Segoe UI", 11, QFont.Weight.Bold))
             tv.setStyleSheet("background: transparent; color: white;")
             tl.addWidget(tv, 1)
-        self.score_inner.addWidget(total_row)
-        self.score_inner.addStretch()
+        self.scoreInnerLayout.addWidget(total_row)
+        self.scoreInnerLayout.addStretch()
 
-        self.status_lbl.setText("")
-        self.restart_btn.setEnabled(True)
-        self.restart_btn.setText("Yeniden Oyna")
+        self.statusLabel.setText("")
+        self.restartBtn.setEnabled(True)
+        self.restartBtn.setText("Yeniden Oyna")
 
     def _on_restart(self):
         if self.network:
             self.network.send({"type": "restart"})
-            self.restart_btn.setText("Bekleniyor...")
-            self.restart_btn.setEnabled(False)
-            self.status_lbl.setText("Diger oyuncunun onayi bekleniyor...")
+            self.restartBtn.setText("Bekleniyor...")
+            self.restartBtn.setEnabled(False)
+            self.statusLabel.setText("Diger oyuncunun onayi bekleniyor...")
 
     def _on_menu(self):
         if self.network:
@@ -176,5 +124,5 @@ class EndScreen(QWidget):
         mw.network.message_received.connect(mw._on_message)
         mw.network.error_occurred.connect(mw._on_error)
         mw.start_screen._reset_button()
-        mw.start_screen.error_label.setText("")
+        mw.start_screen.errorLabel.setText("")
         mw.show_start()

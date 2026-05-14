@@ -1,14 +1,8 @@
-"""
-Oyun Ekranı
-"""
-
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QFrame, QScrollArea, QGroupBox
-)
+import os
+from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QLabel, QPushButton
+from PyQt6 import uic
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont, QColor, QPainter, QBrush, QPen
-
 
 from logic.game_logic import CATEGORIES, CATEGORY_NAMES, UPPER_CATEGORIES, LOWER_CATEGORIES, calculate_score
 
@@ -23,7 +17,6 @@ DOTS = {
 
 
 class AnimatedDie(QWidget):
-
     def __init__(self, index, parent=None):
         super().__init__(parent)
         self.index = index
@@ -131,91 +124,22 @@ class GameScreen(QWidget):
         self.dice = [1]*5
         self.kept = [False]*5
         self.rolls_left = 3
-        self._build_ui()
 
-    def _build_ui(self):
-        main_layout = QHBoxLayout(self)
-        main_layout.setContentsMargins(16, 16, 16, 16)
-        main_layout.setSpacing(16)
+        uic.loadUi(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui_files", "game_screen.ui"),
+            self
+        )
+        self._setup_dice()
+        self.rollBtn.clicked.connect(self._on_roll)
 
-        left = QVBoxLayout()
-        left.setSpacing(8)
-
-        self.turn_label = QLabel("Baglaniliyor...")
-        self.turn_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.turn_label.setFont(QFont("Segoe UI", 13, QFont.Weight.Bold))
-        left.addWidget(self.turn_label)
-
-        self.rolls_label = QLabel("Atis hakki: 3")
-        self.rolls_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        left.addWidget(self.rolls_label)
-
-        dice_group = QGroupBox("Zarlar")
-        dice_group.setFont(QFont("Segoe UI", 10))
-        dice_inner = QVBoxLayout(dice_group)
-        dice_inner.setSpacing(10)
-
-        dice_row = QHBoxLayout()
-        dice_row.setSpacing(8)
-        dice_row.setAlignment(Qt.AlignmentFlag.AlignCenter)
+    def _setup_dice(self):
         self.dice_widgets = []
+        layout = self.diceRow.layout()
         for i in range(5):
             d = AnimatedDie(i)
             d.set_callback(self._toggle_keep)
-            dice_row.addWidget(d)
+            layout.addWidget(d)
             self.dice_widgets.append(d)
-        dice_inner.addLayout(dice_row)
-
-        hint = QLabel("Tutmak istediginiz zarlari tiklayin")
-        hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        hint.setStyleSheet("color: #757575; font-size: 11px;")
-        dice_inner.addWidget(hint)
-
-        left.addWidget(dice_group)
-
-        self.roll_btn = QPushButton("Zar At")
-        self.roll_btn.setFixedHeight(40)
-        self.roll_btn.setFont(QFont("Segoe UI", 13))
-        self.roll_btn.clicked.connect(self._on_roll)
-        self.roll_btn.setEnabled(False)
-        left.addWidget(self.roll_btn)
-
-        self.notif_label = QLabel("")
-        self.notif_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.notif_label.setWordWrap(True)
-        self.notif_label.hide()
-        left.addWidget(self.notif_label)
-
-        left.addStretch()
-        left_widget = QWidget()
-        left_widget.setLayout(left)
-        left_widget.setFixedWidth(380)
-        main_layout.addWidget(left_widget)
-
-        right = QVBoxLayout()
-        right.setSpacing(0)
-
-        score_title = QLabel("Skor Karti")
-        score_title.setFont(QFont("Segoe UI", 15, QFont.Weight.Bold))
-        score_title.setStyleSheet("color: #424242; padding-bottom: 8px; background:transparent;")
-        right.addWidget(score_title)
-
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setStyleSheet("background: transparent; border: none;")
-
-        score_container = QWidget()
-        score_container.setStyleSheet("background: transparent;")
-        self.score_layout = QVBoxLayout(score_container)
-        self.score_layout.setSpacing(4)
-        self.score_layout.setContentsMargins(0, 0, 4, 0)
-
-        scroll.setWidget(score_container)
-        right.addWidget(scroll, 1)
-
-        right_widget = QWidget()
-        right_widget.setLayout(right)
-        main_layout.addWidget(right_widget, 1)
 
     def init_game(self, msg, player_name, network):
         self.player_name = player_name
@@ -226,8 +150,8 @@ class GameScreen(QWidget):
         self._build_score_card()
 
     def _build_score_card(self):
-        while self.score_layout.count():
-            item = self.score_layout.takeAt(0)
+        while self.scoreLayout.count():
+            item = self.scoreLayout.takeAt(0)
             if item.widget():
                 item.widget().deleteLater()
 
@@ -250,26 +174,26 @@ class GameScreen(QWidget):
             pl.setAlignment(Qt.AlignmentFlag.AlignCenter)
             hl.addWidget(pl, 1)
 
-        self.score_layout.addWidget(header)
+        self.scoreLayout.addWidget(header)
 
         upper_lbl = QLabel("  UST BOLUM")
         upper_lbl.setStyleSheet("color: #757575; font-size: 10px; font-weight: bold; background:transparent;")
-        self.score_layout.addWidget(upper_lbl)
+        self.scoreLayout.addWidget(upper_lbl)
 
         for i, cat in enumerate(UPPER_CATEGORIES):
-            self.score_layout.addWidget(self._make_score_row(cat, i))
+            self.scoreLayout.addWidget(self._make_score_row(cat, i))
 
-        self.score_layout.addWidget(self._make_bonus_row())
+        self.scoreLayout.addWidget(self._make_bonus_row())
 
         lower_lbl = QLabel("  ALT BOLUM")
         lower_lbl.setStyleSheet("color: #757575; font-size: 10px; font-weight: bold; background:transparent;")
-        self.score_layout.addWidget(lower_lbl)
+        self.scoreLayout.addWidget(lower_lbl)
 
         for i, cat in enumerate(LOWER_CATEGORIES):
-            self.score_layout.addWidget(self._make_score_row(cat, i + 6))
+            self.scoreLayout.addWidget(self._make_score_row(cat, i + 6))
 
-        self.score_layout.addWidget(self._make_total_row())
-        self.score_layout.addStretch()
+        self.scoreLayout.addWidget(self._make_total_row())
+        self.scoreLayout.addStretch()
 
     def _make_score_row(self, cat, idx):
         row = QFrame()
@@ -367,15 +291,19 @@ class GameScreen(QWidget):
         self.scores = msg.get("scores", self.scores)
 
         if self.my_turn:
-            self.turn_label.setText("Sira Sizde!")
-            self.turn_label.setStyleSheet("color: #2E7D32; font-weight: bold;")
+            self.turnLabel.setText("Sira Sizde!")
+            self.turnLabel.setStyleSheet(
+                "background: white; border-radius: 12px; padding: 12px; color: #2E7D32; font-size: 15px; font-weight: bold;"
+            )
         else:
-            self.turn_label.setText(f"{self.current_player}'in sirasi")
-            self.turn_label.setStyleSheet("color: #00A651;")
+            self.turnLabel.setText(f"{self.current_player}'in sirasi")
+            self.turnLabel.setStyleSheet(
+                "background: white; border-radius: 12px; padding: 12px; color: #00A651; font-size: 15px; font-weight: bold;"
+            )
 
-        self.rolls_label.setText(f"Atis hakki: {self.rolls_left}")
+        self.rollsLabel.setText(f"Atis hakki: {self.rolls_left}")
         self._animate_dice_roll()
-        self.roll_btn.setEnabled(self.my_turn and self.rolls_left > 0)
+        self.rollBtn.setEnabled(self.my_turn and self.rolls_left > 0)
         self._update_score_buttons()
         self._update_score_display()
 
@@ -409,7 +337,7 @@ class GameScreen(QWidget):
         if not self.my_turn or self.rolls_left <= 0:
             return
         kept_indices = [i for i, k in enumerate(self.kept) if k]
-        self.roll_btn.setEnabled(False)
+        self.rollBtn.setEnabled(False)
         self.network.send({"type": "roll", "kept": kept_indices})
 
     def _update_score_buttons(self):
@@ -466,6 +394,6 @@ class GameScreen(QWidget):
                 self.total_labels[p].setText(str(upper_total + bonus + lower_total))
 
     def show_notification(self, msg):
-        self.notif_label.setText(msg)
-        self.notif_label.show()
-        QTimer.singleShot(4000, self.notif_label.hide)
+        self.notifLabel.setText(msg)
+        self.notifLabel.show()
+        QTimer.singleShot(4000, self.notifLabel.hide)
